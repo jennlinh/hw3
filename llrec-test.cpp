@@ -86,7 +86,20 @@ int main(int argc, char* argv[])
     print(head);
 
     // Test out your linked list code
+		// make empty lists
+        Node* smaller = NULL;
+		Node* larger = NULL;
 
+        // call to pivot
+		llpivot(head, smaller, larger, 10);
+        
+        // check if it prints correctly
+		print(smaller);
+		print(larger);
+
+        // delete to avoid valgrind errors
+        dealloc(smaller);
+        dealloc(larger);
 
 
     

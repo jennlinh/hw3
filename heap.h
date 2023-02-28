@@ -2,6 +2,7 @@
 #define HEAP_H
 #include <functional>
 #include <stdexcept>
+#include <vector>
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -61,14 +62,96 @@ public:
 
 private:
   /// Add whatever helper functions and data members you need below
-
+  void heapify(int idx);
+  void trickleUp(int idx);
+  
+  size_t span;
+  PComparator comparison;
+  std::vector<T> items_;
+  int ary;
 
 
 
 };
 
 // Add implementation of member functions here
+template <typename T, typename PComparator>
+Heap<T,PComparator>::Heap(int m, PComparator c)
+{
+  comparison = c;
+  ary = m;
+}
+template <typename T, typename PComparator>
+Heap<T,PComparator>::~Heap()
+{
+}
+template <typename T, typename PComparator>
+void Heap<T,PComparator>::heapify(int idx)
+{
+	// Takes last node puts it in the top location and then recursively swaps it until it is in its right place
 
+  // ensure enough children
+	if ((int)span <= 1 + (idx * ary))
+	{
+		return;
+	}
+	// start with first child
+	int firstChild = 1 + (idx * ary);
+	// essentially right child or exists if there's more children than 2
+	int betweenChild = firstChild;
+
+	// compare to its siblings
+	for (int j = 1; j < ary; j++)
+	{
+		if (betweenChild + j < (int)span && comparison(items_[betweenChild + j], items_[firstChild]))
+		{
+			firstChild = betweenChild + j;
+		}
+	}
+	
+	if (comparison(items_[firstChild], items_[idx]))
+	{
+		std::swap(items_[idx], items_[firstChild]);
+		heapify(firstChild);
+	} 
+}
+template <typename T, typename PComparator>
+void Heap<T,PComparator>::trickleUp(int loc)
+{
+	int parent = (loc - 1)/ary;
+	while(parent >= 1 && comparison(items_[loc], items_[parent]))
+	{ 
+		std::swap(items_[parent], items_[loc]);
+		loc = parent;
+		parent = (loc - 1)/ary;
+	}
+
+  if(parent == 0) //top
+  {
+    return;
+  }
+}
+template <typename T, typename PComparator>
+void Heap<T,PComparator>::push(const T& item)
+{
+  items_.push_back(item);
+  span++;
+  trickleUp(span - 1);
+}
+template <typename T, typename PComparator>
+bool Heap<T,PComparator>::empty() const
+{
+  if (span == 0)
+  {
+    return true;
+  }
+  return false;
+}
+template <typename T, typename PComparator>
+size_t Heap<T,PComparator>::size() const
+{
+  return span;
+}
 
 // We will start top() for you to handle the case of 
 // calling top on an empty heap
@@ -81,14 +164,11 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-
-
+    throw std::underflow_error("Nothing at the top!");
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
-
-
+  return items_[0];
 }
 
 
@@ -101,12 +181,12 @@ void Heap<T,PComparator>::pop()
     // ================================
     // throw the appropriate exception
     // ================================
-
-
+    throw std::underflow_error("Nothing to pop!");
   }
-
-
-
+  std::swap(items_[0],items_.back());
+  span--;
+  items_.pop_back();
+  heapify(0);
 }
 
 
