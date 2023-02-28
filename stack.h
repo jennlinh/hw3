@@ -25,9 +25,9 @@ Stack<T>::Stack()
 
 }
 template <typename T>
-Stack<T>::Stack()
+Stack<T>::~Stack()
 {
-
+    
 }
 template <typename T>
 bool Stack<T>::empty() const
@@ -46,7 +46,7 @@ size_t Stack<T>::size() const
 template <typename T>
 void Stack<T>::push(const T& item)
 {
-    std::vector<T>::push(item);
+    std::vector<T>::push_back(item);
 }
 template <typename T>
 void Stack<T>::pop()
@@ -55,7 +55,7 @@ void Stack<T>::pop()
     {
         throw std::underflow_error("Nothing to pop!");
     }
-    std::vector<T>::pop();
+    std::vector<T>::pop_back();
 }
 template <typename T>
 const T& Stack<T>::top() const
@@ -64,7 +64,7 @@ const T& Stack<T>::top() const
     {
         throw std::underflow_error("Nothing to top!");
     }
-    return std::vector<T>::top();
+    return std::vector<T>::back();
 
 }
 
